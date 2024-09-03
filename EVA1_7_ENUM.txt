@@ -1,0 +1,198 @@
+EVA1_7_ENUM
+
+MySQL Shell 8.0.38
+
+Copyright (c) 2016, 2024, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+ MySQL  SQL > \connect --mc root@localhost
+Creating a Classic session to 'root@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 22
+Server version: 8.0.39 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sys                |
+| tbd_e1             |
+| world              |
++--------------------+
+7 rows in set (0.0017 sec)
+ MySQL  localhost:3306 ssl  SQL > use tbd_e1
+Default schema set to `tbd_e1`.
+Fetching global names, object names from `tbd_e1` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > use tbd_e1;
+Default schema set to `tbd_e1`.
+Fetching global names, object names from `tbd_e1` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > show tables;
++------------------+
+| Tables_in_tbd_e1 |
++------------------+
+| automovil        |
+| mascotas         |
+| peliculas        |
+| student          |
+| tv               |
++------------------+
+5 rows in set (0.0015 sec)
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > select * from peliculas;
++----+-------------+---------+-------+
+| id | titulo      | genero  | clasi |
++----+-------------+---------+-------+
+|  1 | Coraline    | Comedia | PG    |
+|  2 | Titanic     | Comedia | PG13  |
+|  3 | Shrek       | Comedia | PG13  |
+|  4 | Sharknado   | Drama   | PG13  |
+|  5 | Sharknado 2 | Drama   | PG13  |
+| 20 | Sharknado   | Drama   | PG13  |
+| 21 | Sharknado 3 | Drama   | PG13  |
++----+-------------+---------+-------+
+7 rows in set (0.0040 sec)
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > insert into peliculas(titulo, genero, clasi)
+                                       -> value("Deadpool 3", "Komedia", "Adul");
+Query OK, 1 row affected (0.0108 sec)
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > select * from peliculas;
++----+-------------+---------+-------+
+| id | titulo      | genero  | clasi |
++----+-------------+---------+-------+
+|  1 | Coraline    | Comedia | PG    |
+|  2 | Titanic     | Comedia | PG13  |
+|  3 | Shrek       | Comedia | PG13  |
+|  4 | Sharknado   | Drama   | PG13  |
+|  5 | Sharknado 2 | Drama   | PG13  |
+| 20 | Sharknado   | Drama   | PG13  |
+| 21 | Sharknado 3 | Drama   | PG13  |
+| 22 | Deadpool 3  | Komedia | Adul  |
++----+-------------+---------+-------+
+8 rows in set (0.0006 sec)
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > create table playeras(
+                                       -> id int auto_increment key,
+                                       -> marca varchar(50) not null,
+                                       -> modelo varchar(50) not null,
+                                       -> talla ENUM("s", "m", "l", "xl", "xxl"));
+Query OK, 0 rows affected (0.0435 sec)
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > desc playeras;
++--------+------------------------------+------+-----+---------+----------------+
+| Field  | Type                         | Null | Key | Default | Extra          |
++--------+------------------------------+------+-----+---------+----------------+
+| id     | int                          | NO   | PRI | NULL    | auto_increment |
+| marca  | varchar(50)                  | NO   |     | NULL    |                |
+| modelo | varchar(50)                  | NO   |     | NULL    |                |
+| talla  | enum('s','m','l','xl','xxl') | YES  |     | NULL    |                |
++--------+------------------------------+------+-----+---------+----------------+
+4 rows in set (0.0047 sec)
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > insert into playeras(marca, modelo, talla) values('Cuidado con el perro','Corte recto', 's');
+Query OK, 1 row affected (0.0252 sec)
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > insert into playeras(marca, modelo, talla) values('Vogue','Corte recto', 'xs');
+ERROR: 1265 (01000): Data truncated for column 'talla' at row 1
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > select * from playeras;
++----+----------------------+-------------+-------+
+| id | marca                | modelo      | talla |
++----+----------------------+-------------+-------+
+|  1 | Cuidado con el perro | Corte recto | s     |
++----+----------------------+-------------+-------+
+1 row in set (0.0005 sec)
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > insert into playeras(marca, modelo, talla) values('Cuidado con el perro','Corte recto', 'xl');
+Query OK, 1 row affected (0.0219 sec)
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > select * from playeras;
++----+----------------------+-------------+-------+
+| id | marca                | modelo      | talla |
++----+----------------------+-------------+-------+
+|  1 | Cuidado con el perro | Corte recto | s     |
+|  2 | Cuidado con el perro | Corte recto | xl    |
++----+----------------------+-------------+-------+
+2 rows in set (0.0006 sec)
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > create table clientes(id int auto_increment key, nombre varchar(50) not null, direccion varchar(50) not null, telefono int(9) not null, razonSocial ENUM('Persona moral', 'Persona fisica') not null);
+Query OK, 0 rows affected, 1 warning (0.0452 sec)
+Warning (code 1681): Integer display width is deprecated and will be removed in a future release.
+  MySQL  localhost:3306 ssl  tbd_e1  SQL > desc clientes;
++-------------+----------------------------------------+------+-----+---------+----------------+
+| Field       | Type                                   | Null | Key | Default | Extra          |
++-------------+----------------------------------------+------+-----+---------+----------------+
+| id          | int                                    | NO   | PRI | NULL    | auto_increment |
+| nombre      | varchar(50)                            | NO   |     | NULL    |                |
+| direccion   | varchar(50)                            | NO   |     | NULL    |                |
+| telefono    | int                                    | NO   |     | NULL    |                |
+| razonSocial | enum('Persona moral','Persona fisica') | NO   |     | NULL    |                |
++-------------+----------------------------------------+------+-----+---------+----------------+
+5 rows in set (0.0014 sec)
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > insert into clientes(nombre, direccion, telefono, razonSocial) values('Ximena Garcia', 'Calle Potrero Hondo 4704', 6145624312, 'Persona fisica');
+ERROR: 1264 (22003): Out of range value for column 'telefono' at row 1
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > insert into clientes(nombre, direccion, telefono, razonSocial) values('Ximena Garcia', 'Calle Potrero Hondo 4704', 614562442, 'Persona fisica');
+Query OK, 1 row affected (0.0064 sec)
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > select * from clientes;
++----+---------------+--------------------------+-----------+----------------+
+| id | nombre        | direccion                | telefono  | razonSocial    |
++----+---------------+--------------------------+-----------+----------------+
+|  1 | Ximena Garcia | Calle Potrero Hondo 4704 | 614562442 | Persona fisica |
++----+---------------+--------------------------+-----------+----------------+
+1 row in set (0.0008 sec)
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > insert into clientes(nombre, direccion, telefono, razonSocial) values('Ximena Garcia', 'Calle Potrero Hondo 4704', 614562442, 'fisica');
+ERROR: 1265 (01000): Data truncated for column 'razonSocial' at row 1
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > insert into clientes(nombre, direccion, telefono, razonSocial) values('Calle Potrero Hondo 4704', 614562442, 'fisica');
+ERROR: 1136 (21S01): Column count doesn't match value count at row 1
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > show create table clientes;
++----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table    | Create Table
+
+                                                                           |
++----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| clientes | CREATE TABLE `clientes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(50) NOT NULL,
+  `direccion` varchar(50) NOT NULL,
+  `telefono` int NOT NULL,
+  `razonSocial` enum('Persona moral','Persona fisica') NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci |
++----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.0017 sec)
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > alter table clientes
+                                       -> add rfc varchar(13)
+                                       -> after nombre;
+Query OK, 0 rows affected (0.0442 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > show tables;
++------------------+
+| Tables_in_tbd_e1 |
++------------------+
+| automovil        |
+| clientes         |
+| mascotas         |
+| peliculas        |
+| playeras         |
+| student          |
+| tv               |
++------------------+
+7 rows in set (0.0014 sec)
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > desc clientes;
++-------------+----------------------------------------+------+-----+---------+----------------+
+| Field       | Type                                   | Null | Key | Default | Extra          |
++-------------+----------------------------------------+------+-----+---------+----------------+
+| id          | int                                    | NO   | PRI | NULL    | auto_increment |
+| nombre      | varchar(50)                            | NO   |     | NULL    |                |
+| rfc         | varchar(13)                            | YES  |     | NULL    |                |
+| direccion   | varchar(50)                            | NO   |     | NULL    |                |
+| telefono    | int                                    | NO   |     | NULL    |                |
+| razonSocial | enum('Persona moral','Persona fisica') | NO   |     | NULL    |                |
++-------------+----------------------------------------+------+-----+---------+----------------+
+6 rows in set (0.0014 sec)
+ MySQL  localhost:3306 ssl  tbd_e1  SQL > select * from clientes;
++----+---------------+------+--------------------------+-----------+----------------+
+| id | nombre        | rfc  | direccion                | telefono  | razonSocial    |
++----+---------------+------+--------------------------+-----------+----------------+
+|  1 | Ximena Garcia | NULL | Calle Potrero Hondo 4704 | 614562442 | Persona fisica |
++----+---------------+------+--------------------------+-----------+----------------+
+1 row in set (0.0007 sec)
+ MySQL  localhost:3306 ssl  tbd_e1  SQL >
