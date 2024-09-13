@@ -1,0 +1,79 @@
+EVA1_10_EJERCICIO_NORMALIZACION
+
+MySQL Shell 8.0.38
+
+Copyright (c) 2016, 2024, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+ MySQL  SQL > \connect --mc root@localhost
+Creating a Classic session to 'root@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 13
+Server version: 8.0.39 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| mysql              |
+| performance_schema |
+| sakila             |
+| sys                |
+| tbd_e1             |
+| world              |
++--------------------+
+7 rows in set (0.0020 sec)
+ MySQL  localhost:3306 ssl  SQL > create database company;
+Query OK, 1 row affected (0.0282 sec)
+ MySQL  localhost:3306 ssl  SQL > use company;
+Default schema set to `company`.
+Fetching global names, object names from `company` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  company  SQL > create table department(departmentID varchar(10) primary key, department varchar(50));
+Query OK, 0 rows affected (0.0626 sec)
+ MySQL  localhost:3306 ssl  company  SQL > create table gender(genderID varchar(50) primary key, gender varchar(50));
+Query OK, 0 rows affected (0.0494 sec)
+ MySQL  localhost:3306 ssl  company  SQL > create table ethnicity(ethnicityID varchar(10) primary key, ethnicity varchar(50));
+Query OK, 0 rows affected (0.0489 sec)
+ MySQL  localhost:3306 ssl  company  SQL > create table location(locationID varchar(10) primary key, country varchar(50) not null, city varchar(50));
+Query OK, 0 rows affected (0.0496 sec)
+ MySQL  localhost:3306 ssl  company  SQL > create table businessUnit(businessUnitID varchar(10) primary key, businessUnit varchar(50));
+Query OK, 0 rows affected (0.0314 sec)
+ MySQL  localhost:3306 ssl  company  SQL > create table employees(EEID varchar(10) primary key, name varchar(50) not null, lastName varchar(50) not null, ethnicityID varchar(10), genderID varchar(50), age int not null, locationID varchar(10),
+                                        -> foreing key(ethnicityID) references ethnicity(ethnicityID),
+                                        -> foreign key(genderID) references gender(genderID),
+                                        -> foreign key(locationID) references location(locationID));
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'key(ethnicityID) references ethnicity(ethnicityID),
+foreign key(genderID) refere' at line 2
+ MySQL  localhost:3306 ssl  company  SQL > create table employees(EEID varchar(10) primary key, name varchar(50) not null, lastName varchar(50) not null, ethnicityID varchar(10), genderID varchar(50), age int not null, locationID varchar(10),  FOREIGN KEY (ethnicityID) REFERENCES ethnicity(ethnicityID), FOREIGN KEY (genderID) REFERENCES gender(genderID), FOREIGN KEY (locationID) REFERENCES location(locationID));
+Query OK, 0 rows affected (0.1140 sec)
+ MySQL  localhost:3306 ssl  company  SQL > create table anualSalary(salaryID varchar(10) not null, EEID varchar(10) not null, salary decimal(10,2) not null, bonus decimal(5,2) not null, PRIMARY KEY (salaryID, EEID), FOREIGN KEY (EEID) REFERENCES employees(EEID));
+Query OK, 0 rows affected (0.0995 sec)
+ MySQL  localhost:3306 ssl  company  SQL > create table job(jobTitleID int primary key, jobTitle varchar(50) not null, EEID varchar(20) not null, FOREIGN KEY(EEID) REFERENCES employees(EEID));
+Query OK, 0 rows affected (0.0959 sec)
+ MySQL  localhost:3306 ssl  company  SQL > create table hireDate_exitDate(exitDateID varchar(10) primary key, EEID varchar(10) not null, hireDate DATE not null, exitDate DATE not null, FOREIGN KEY (EEID) REFERENCES employees(EEID));
+Query OK, 0 rows affected (0.0880 sec)
+ MySQL  localhost:3306 ssl  company  SQL > create table connection(connectionID varchar(10) primary key, EEID varchar(10), departmentID varchar(10), businessUnitID varchar(10), FOREIGN KEY (EEID) REFERENCES employees(EEID), FOREIGN KEY (departmentID) REFERENCES department(departmentID), FOREIGN KEY (businessUnitID) REFERENCES businessUnit(BusinessUnitID));
+Query OK, 0 rows affected (0.0952 sec)
+ MySQL  localhost:3306 ssl  company  SQL > show tables
+                                        -> ;
++-------------------+
+| Tables_in_company |
++-------------------+
+| anualsalary       |
+| businessunit      |
+| connection        |
+| department        |
+| employees         |
+| ethnicity         |
+| gender            |
+| hiredate_exitdate |
+| job               |
+| location          |
++-------------------+
+10 rows in set (0.0292 sec)
+ MySQL  localhost:3306 ssl  company  SQL >
